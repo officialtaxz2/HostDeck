@@ -3460,7 +3460,7 @@ window.hostdeckLeitstand = function (core) {
         el('td', {}, t.description || t.name || '', t.command ? el('span', { class: 'mono ls-mut blk' }, t.command) : null),
         el('td', {}, ({ cron: 'Cron', timer: 'Timer', dienst: 'Dienst' })[t.kind] || t.kind)))))) : null;
     return [head({ i: 'backup', k: 'Backup · Ziel: dein PC über hostdeck.exe', h,
-      p: 'Der Server packt deine Auswahl verschlüsselt und schickt sie durch den SSH-Tunnel auf deinen PC. Vor jedem Umzug prüft HostDeck, ob ein gültiges Backup da ist.' }),
+      p: 'Der Server packt deine Auswahl verschlüsselt und schickt sie durch den SSH-Tunnel auf deinen PC. Vor jedem Umzug prüft HostDeck, ob ein gültiges Backup da ist. hostdeck.exe ist nicht im Release; einfacher richtest du HostDeck als Dienst ein (sudo hostdeck einrichten) und startest Backups dann hier.' }),
     m.s.backups_note ? el('p', { class: 'band b-warn' }, m.s.backups_note) : null,
     el('div', { class: 'ls-grid eq' },
       sec('Letztes Backup', last, { cls: 'c6' }),
@@ -3827,7 +3827,7 @@ window.hostdeckLeitstand = function (core) {
       ['Domains umstellen', 'beim Anbieter deiner Domains auf die neue Adresse zeigen lassen', false],
     ];
     return [head({ i: 'umzug', k: 'Umzug · auf einen neuen vServer', h,
-      p: 'Der Umzug läuft hier über hostdeck.exe auf deinem PC. Hier siehst du, wo du stehst und was der neue Server braucht. Läuft HostDeck als Dienst auf dem Server, geht der Probe-Umzug direkt aus dem Leitstand.' }),
+      p: 'Der Umzug läuft hier über hostdeck.exe auf deinem PC, das nicht im Release ist. Hier siehst du, wo du stehst und was der neue Server braucht. Einfacher: HostDeck als Dienst einrichten (sudo hostdeck einrichten), dann geht der Umzug direkt aus dem Leitstand.' }),
     el('div', { class: 'ls-grid eq' },
       sec('Ablauf', vsteps(steps), { cls: 'c5' }),
       sec('Checkliste für den neuen Server', moveChecklist(m), { cls: 'c7', sub: 'Dinge, die nicht als Datei mitkommen, sondern neu eingerichtet werden' }))];

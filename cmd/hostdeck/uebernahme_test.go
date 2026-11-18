@@ -302,7 +302,7 @@ func TestKopieLeitstandEntfernen(t *testing.T) {
 }
 
 func TestTestadresse(t *testing.T) {
-	for in, want := range map[string]string{"hostdeck.example.net": "hostdeck-neu.example.net", "leitstand.a.b.de": "leitstand-neu.a.b.de", "x": "", "": ""} {
+	for in, want := range map[string]string{"hostdeck.example.net": "hostdeck-neu.example.net", "leitstand.a.b.example": "leitstand-neu.a.b.example", "x": "", "": ""} {
 		if got := testDomain(in); got != want {
 			t.Errorf("%q: %q statt %q", in, got, want)
 		}

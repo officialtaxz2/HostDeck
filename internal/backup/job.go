@@ -125,7 +125,7 @@ func (j *Job) Run(ctx context.Context) int {
 	if j.PlanOnly {
 		hint := j.PlanHint
 		if hint == "" {
-			hint = "Das echte Backup startest du am PC: Menüpunkt 2 oder hostdeck.exe backup."
+			hint = "Das echte Backup startest du im Leitstand unter Backup."
 		}
 		j.printf("\nProbelauf beendet. %s\n", hint)
 		return ExitOK

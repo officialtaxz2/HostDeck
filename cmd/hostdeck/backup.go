@@ -67,7 +67,7 @@ func backupCmd(ctx context.Context, args []string, stdout, stderr io.Writer) int
 			*server, *folder, stdout, stderr)
 	}
 	if !*plan && *repo == "" {
-		fmt.Fprintln(stderr, "Das Backup startest du am PC: hostdeck.exe backup")
+		fmt.Fprintln(stderr, "Als Dienst eingerichtet startest du das Backup im Leitstand unter Backup.")
 		fmt.Fprintln(stderr, "Direkt auf dem Server geht es nur mit einem Ziel: sudo ./hostdeck backup --repo <Ziel>,")
 		fmt.Fprintln(stderr, "etwa einem Ordner auf einer zweiten Platte. Den Plan zeigt sudo ./hostdeck backup --plan.")
 		return 2

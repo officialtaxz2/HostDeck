@@ -1006,7 +1006,7 @@ func runFreischalten(ctx context.Context, p *publisher, raw string, back, yes bo
 }
 
 // blockHosts liest die Adressen aus der Kopfzeile eines Blocks, wie
-// siteBlock ihn schreibt („a.de, b.de {“).
+// siteBlock ihn schreibt („a.example, b.example {“).
 func blockHosts(b []byte) []string {
 	var out []string
 	for _, line := range strings.Split(string(b), "\n") {

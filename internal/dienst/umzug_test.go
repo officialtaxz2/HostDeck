@@ -297,7 +297,7 @@ type dnsMoves struct {
 
 func (m *dnsMoves) DNS(context.Context) DNSReply {
 	return DNSReply{Target: "198.51.100.20", Here: []string{"203.0.113.1"}, Extra: m.extra, Domains: []DNSDomain{
-		{Name: "a.de", State: DNSStateOf([]DNSRecord{{Type: "A", IP: "198.51.100.20", Where: DNSNew}})}}}
+		{Name: "a.example", State: DNSStateOf([]DNSRecord{{Type: "A", IP: "198.51.100.20", Where: DNSNew}})}}}
 }
 
 func (m *dnsMoves) SetExtraDomains(list []string) error {

@@ -170,7 +170,7 @@ func kindOf(s *Segment, block, first bool) string {
 	return SegOther
 }
 
-// addrs macht aus „a.de, b.de“ oder „a.de b.de“ eine Liste.
+// addrs macht aus „a.example, b.example“ oder „a.example b.example“ eine Liste.
 func addrs(args []string) []string {
 	var out []string
 	for _, a := range args {

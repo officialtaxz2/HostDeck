@@ -28,6 +28,13 @@ if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
   fail "Es gibt nicht eingecheckte Änderungen. Ein Release kommt nur aus einem sauberen Stand."
 fi
 [[ -e "$out" ]] && fail "$out gibt es schon."
+# Nachbaubar ist ein Release nur aus einem Stand, den es öffentlich gibt:
+# Das Programm trägt die Commit-Kennung in sich. Testversionen (mit „-“,
+# etwa 1.1.0-rc.1) dürfen auch aus einem Zweig kommen.
+if ! git merge-base --is-ancestor HEAD origin/main 2>/dev/null; then
+  [[ "$ver" == *-* ]] || fail "Dieser Stand liegt nicht auf origin/main. Ein Release kommt nur aus dem öffentlichen main (vorher git fetch)."
+  echo "Hinweis: Testversion aus einem Stand, der nicht auf origin/main liegt." >&2
+fi
 
 # Die Lizenzliste muss zum Stand passen, sonst fehlt eine Bibliothek.
 lic=$(mktemp)
@@ -39,7 +46,7 @@ fi
 
 mkdir -p "$out"
 commit=$(git rev-parse --short=7 HEAD)
-echo "Baue HostDeck $ver (Stand $commit) nach $out …"
+echo "Baue HostDeck $ver (Stand $commit, $(go version | awk '{print $3}')) nach $out …"
 sign() { go run ./cmd/hostdeck-signieren "$@"; }
 for arch in amd64 arm64; do
   bin="hostdeck-$ver-linux-$arch"
@@ -65,5 +72,6 @@ if [[ "$(uname -m)" == x86_64 ]]; then
 fi
 
 echo
-echo "Fertig. Für das GitHub-Release (Tag v$ver) alle Dateien aus $out hochladen:"
+echo "Fertig. Für das GitHub-Release (Tag v$ver auf $commit) alle Dateien aus $out hochladen"
+echo "und im Release-Text die Go-Version nennen ($(go version | awk '{print $3}')), damit es sich nachbauen lässt:"
 (cd "$out" && ls -1)
