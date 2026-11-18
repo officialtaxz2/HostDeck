@@ -30,7 +30,7 @@ func TestNichtsZuMelden(t *testing.T) {
 			return betrieb.Snapshot{Containers: []betrieb.Container{{Name: "a", Running: true, State: "running"}}}, nil
 		},
 		Sites: func(context.Context) []domains.Site {
-			return []domains.Site{{Hosts: []string{"a.de"}, Live: &domains.Live{CertUntil: &until}}}
+			return []domains.Site{{Hosts: []string{"a.example"}, Live: &domains.Live{CertUntil: &until}}}
 		},
 		Security: func(context.Context) sicherheit.Overview { return sicherheit.Overview{} },
 	}
@@ -66,10 +66,10 @@ func TestAlleHinweise(t *testing.T) {
 		},
 		Sites: func(context.Context) []domains.Site {
 			return []domains.Site{
-				{Hosts: []string{"a.de"}, Live: &domains.Live{CertUntil: &later}},
-				{Hosts: []string{"b.de"}, Live: &domains.Live{CertUntil: &soon}},
-				{Hosts: []string{"c.de"}, Live: &domains.Live{CertUntil: &gone}},
-				{Hosts: []string{"aus.de"}, Kind: domains.KindOff, Live: &domains.Live{CertUntil: &gone}},
+				{Hosts: []string{"a.example"}, Live: &domains.Live{CertUntil: &later}},
+				{Hosts: []string{"b.example"}, Live: &domains.Live{CertUntil: &soon}},
+				{Hosts: []string{"c.example"}, Live: &domains.Live{CertUntil: &gone}},
+				{Hosts: []string{"aus.example"}, Kind: domains.KindOff, Live: &domains.Live{CertUntil: &gone}},
 			}
 		},
 		Security: func(context.Context) sicherheit.Overview {
@@ -92,7 +92,7 @@ func TestAlleHinweise(t *testing.T) {
 				t.Errorf("Neustarts: %+v", h)
 			}
 		case "zertifikat":
-			if !strings.Contains(h.Text, "c.de (abgelaufen), b.de (in 3 Tagen), a.de (in 10 Tagen)") || strings.Contains(h.Text, "aus.de") {
+			if !strings.Contains(h.Text, "c.example (abgelaufen), b.example (in 3 Tagen), a.example (in 10 Tagen)") || strings.Contains(h.Text, "aus.example") {
 				t.Errorf("Zertifikate: %s", h.Text)
 			}
 		case "platz:/":
@@ -147,7 +147,7 @@ func TestMitWarnungen(t *testing.T) {
 		Disk:   func(string) (int64, int64, error) { return 100e9, 1e9, nil },
 		Memory: func() (int64, int64) { return 8e9, 1e8 },
 		Alerts: func() []Hint {
-			return []Hint{{Key: "seite:a.de", Level: Warn, Title: "a"}, {Key: "schutz-verloren", Level: Err, Title: "b"}}
+			return []Hint{{Key: "seite:a.example", Level: Warn, Title: "a"}, {Key: "schutz-verloren", Level: Err, Title: "b"}}
 		},
 		Security: func(context.Context) sicherheit.Overview {
 			return sicherheit.Overview{Firewall: sicherheit.Firewall{OwnLost: true}, Pending: &sicherheit.Pending{What: "Port 8080 schließen"}}
@@ -158,7 +158,7 @@ func TestMitWarnungen(t *testing.T) {
 	for _, h := range r.Hints {
 		keys = append(keys, h.Key)
 	}
-	if got := strings.Join(keys, ","); got != "schutz-verloren,seite:a.de,schutz-wartet" {
+	if got := strings.Join(keys, ","); got != "schutz-verloren,seite:a.example,schutz-wartet" {
 		t.Errorf("Hinweise: %s", got)
 	}
 }

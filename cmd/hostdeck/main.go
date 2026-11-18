@@ -74,7 +74,9 @@ Auf dem Server ohne Dienst:
                           startet Container wieder, die HostDeck gestoppt hat
   sudo ./hostdeck verify       prüft einen zurückgespielten Server
 
-Am PC (Windows: hostdeck.exe, im Ordner mit hostdeck-linux-amd64 und hostdeck-linux-arm64):
+Am PC (früherer Weg; hostdeck.exe ist nicht im Release, selbst bauen mit
+GOOS=windows go build -o hostdeck.exe ./cmd/hostdeck; im Ordner mit
+hostdeck-linux-amd64 und hostdeck-linux-arm64). Einfacher geht alles im Leitstand:
   hostdeck.exe backup --plan   Probelauf über SSH: stoppt nichts, sendet nichts
   hostdeck.exe backup          Backup auf diesen PC; beim ersten Mal fragt HostDeck nach
                           Server und Backup-Ordner

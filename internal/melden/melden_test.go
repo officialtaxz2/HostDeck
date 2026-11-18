@@ -110,12 +110,12 @@ func verifyJWT(t *testing.T, jwt string, pub *ecdsa.PublicKey) map[string]any {
 }
 
 func TestAdressen(t *testing.T) {
-	for raw, want := range map[string]string{"": DefaultServer, "ntfy.example.de": "https://ntfy.example.de", "https://ntfy.example.de/": "https://ntfy.example.de", "https://x.de/ntfy": "https://x.de/ntfy"} {
+	for raw, want := range map[string]string{"": DefaultServer, "ntfy.example.de": "https://ntfy.example.de", "https://ntfy.example.de/": "https://ntfy.example.de", "https://x.example/ntfy": "https://x.example/ntfy"} {
 		if got, err := CheckServer(raw); err != nil || got != want {
 			t.Errorf("CheckServer(%q) = %q, %v", raw, got, err)
 		}
 	}
-	for _, bad := range []string{"http://ntfy.example.de", "https://a:b@ntfy.example.de", "https://x.de/?a=1", "https://"} {
+	for _, bad := range []string{"http://ntfy.example.de", "https://a:b@ntfy.example.de", "https://x.example/?a=1", "https://"} {
 		if _, err := CheckServer(bad); err == nil {
 			t.Errorf("CheckServer(%q) ohne Fehler", bad)
 		}
@@ -125,7 +125,7 @@ func TestAdressen(t *testing.T) {
 			t.Errorf("CheckEndpoint(%q): %v", ok, err)
 		}
 	}
-	for _, bad := range []string{"https://evil.example/apple", "http://web.push.apple.com/x", "https://web.push.apple.com:8443/x", "https://push.apple.com.evil.de/x", "https://127.0.0.1/x"} {
+	for _, bad := range []string{"https://evil.example/apple", "http://web.push.apple.com/x", "https://web.push.apple.com:8443/x", "https://push.apple.com.evil.example/x", "https://127.0.0.1/x"} {
 		if err := CheckEndpoint(bad); err == nil {
 			t.Errorf("CheckEndpoint(%q) ohne Fehler", bad)
 		}
@@ -271,7 +271,7 @@ func TestNtfyUndHerzschlag(t *testing.T) {
 	n.take()
 
 	// Herzschlag: sofort, Ausfall und Rückkehr im Protokoll.
-	if _, err := s.SetBeat("http://x.de/ping"); err == nil {
+	if _, err := s.SetBeat("http://x.example/ping"); err == nil {
 		t.Error("http ohne Fehler")
 	}
 	if _, err := s.SetBeat(srv.URL + "/ping/abc123"); err != nil {

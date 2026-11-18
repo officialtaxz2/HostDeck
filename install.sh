@@ -34,7 +34,7 @@ main() {
         [[ $# -ge 2 && -n "$2" && "$2" != -* ]] || fail "Hinter --version fehlt die Versionsnummer, etwa: --version 1.0.0"
         shift; want="$1" ;;
       --version=*) want="${1#--version=}"; [[ -n "$want" ]] || fail "Hinter --version fehlt die Versionsnummer, etwa: --version 1.0.0" ;;
-      -h|--help) sed -n '2,17p' "$0" 2>/dev/null || true; return 0 ;;
+      -h|--help) usage; return 0 ;;
       *) fail "Unbekannte Angabe: $1 (möglich: --ja, --version V, --trotzdem)" ;;
     esac
     shift
@@ -88,6 +88,18 @@ main() {
   fi
   command -v ssh-keygen >/dev/null 2>&1 || fail "Zum Prüfen der Signatur fehlt ssh-keygen. Installieren: sudo apt install openssh-client"
   command -v sha256sum >/dev/null 2>&1 || fail "sha256sum fehlt (Paket coreutils)."
+
+  # Platz: Programm, Rückfall-Kopie und Update brauchen zusammen gut 50 MB,
+  # die Daten wachsen mit Verlauf und Backups.
+  local dir need free
+  for dir in /usr/local/lib:100 /var/lib:200; do
+    need=${dir#*:}; dir=${dir%%:*}
+    mkdir -p "$dir"
+    free=$(df -Pm "$dir" | awk 'NR==2 {print $4}')
+    if [[ -n "$free" && "$free" -lt "$need" ]]; then
+      fail "Unter $dir sind nur $free MB frei, HostDeck braucht mindestens $need MB. Nichts geändert."
+    fi
+  done
 
   # Der Arbeitsordner liegt nicht unter /tmp: Auf gehärteten Servern darf
   # dort nichts ausgeführt werden (noexec), und das geladene Programm muss
@@ -187,6 +199,24 @@ main() {
   else
     "$tmp/$file" "${args[@]}" < /dev/null
   fi
+}
+
+# usage steht als Text hier, weil $0 bei „curl … | bash“ nur „bash“ ist.
+usage() {
+  cat <<'TEXT'
+HostDeck installieren: lädt das Programm von GitHub, prüft die Signatur und
+richtet HostDeck als Dienst ein. Danach geht alles Weitere im Browser.
+
+  curl -fsSL https://github.com/officialtaxz2/HostDeck/releases/latest/download/install.sh | sudo bash
+
+Optionen (hinter „sudo bash -s --“ bzw. „sudo bash install.sh“):
+  --ja             keine Rückfragen; der Hinweis auf neue Versionen ist an
+  --version V      eine bestimmte Version statt der neuesten (auch HOSTDECK_VERSION=V)
+  --trotzdem       auch auf einem System, das HostDeck nicht offiziell unterstützt
+
+Das Skript ändert nichts, bevor du „Weiter?“ bestätigt hast.
+Entfernen geht jederzeit mit: sudo hostdeck deinstallieren
+TEXT
 }
 
 say() { printf '\033[1m%s\033[0m\n' "$*"; }

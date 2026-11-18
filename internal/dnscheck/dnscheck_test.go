@@ -102,7 +102,7 @@ func testResolver(port int) *Resolver {
 	return &Resolver{
 		Port: port, Timeout: time.Second,
 		NS: func(_ context.Context, z string) ([]string, error) {
-			if z == "beispiel.de" || z == "anderer.net" {
+			if z == "beispiel.example" || z == "anderer.example" {
 				return []string{"127.0.0.1"}, nil
 			}
 			return nil, errors.New("no such host")
@@ -113,12 +113,12 @@ func testResolver(port int) *Resolver {
 
 func TestLookupBeimZustaendigenNameserver(t *testing.T) {
 	port := fakeNS(t, map[string][]rr{
-		"shop.beispiel.de": {{typ: TypeA, ttl: 3600, data: []byte{203, 0, 113, 7}}, {typ: TypeAAAA, ttl: 300, data: net.ParseIP("2001:db8::7")}},
-		"www.beispiel.de":  {{typ: TypeCNAME, ttl: 300, cname: "lb.anderer.net"}},
-		"lb.anderer.net":   {{typ: TypeA, ttl: 60, data: []byte{198, 51, 100, 1}}},
+		"shop.beispiel.example": {{typ: TypeA, ttl: 3600, data: []byte{203, 0, 113, 7}}, {typ: TypeAAAA, ttl: 300, data: net.ParseIP("2001:db8::7")}},
+		"www.beispiel.example":  {{typ: TypeCNAME, ttl: 300, cname: "lb.anderer.example"}},
+		"lb.anderer.example":    {{typ: TypeA, ttl: 60, data: []byte{198, 51, 100, 1}}},
 	}, false)
 	r := testResolver(port)
-	a := r.Lookup(context.Background(), "Shop.Beispiel.de.")
+	a := r.Lookup(context.Background(), "Shop.Beispiel.Example.")
 	if a.Err != "" || a.Server != "127.0.0.1" || len(a.Records) != 2 {
 		t.Fatalf("%+v", a)
 	}
@@ -126,26 +126,26 @@ func TestLookupBeimZustaendigenNameserver(t *testing.T) {
 		a.Records[1].Type != "AAAA" || a.Records[1].IP.String() != "2001:db8::7" || a.Records[1].TTL != 300 {
 		t.Errorf("Einträge: %+v", a.Records)
 	}
-	w := r.Lookup(context.Background(), "www.beispiel.de")
-	if w.CNAME != "lb.anderer.net" || len(w.Records) != 1 || w.Records[0].IP.String() != "198.51.100.1" {
+	w := r.Lookup(context.Background(), "www.beispiel.example")
+	if w.CNAME != "lb.anderer.example" || len(w.Records) != 1 || w.Records[0].IP.String() != "198.51.100.1" {
 		t.Errorf("CNAME: %+v", w)
 	}
 	// Gibt es die Domain nicht, ist das die Antwort.
-	x := r.Lookup(context.Background(), "fehlt.beispiel.de")
+	x := r.Lookup(context.Background(), "fehlt.beispiel.example")
 	if x.Server != "127.0.0.1" || len(x.Records) != 0 || x.Err == "" {
 		t.Errorf("NXDOMAIN: %+v", x)
 	}
 	// Ohne erreichbaren Nameserver: normaler Weg.
 	r.Port = 1
-	y := r.Lookup(context.Background(), "shop.beispiel.de")
+	y := r.Lookup(context.Background(), "shop.beispiel.example")
 	if y.Server != "" || len(y.Records) != 1 || y.Records[0].IP.String() != "192.0.2.99" {
 		t.Errorf("Rückfall: %+v", y)
 	}
 }
 
 func TestLookupUeberTCPWennAbgeschnitten(t *testing.T) {
-	port := fakeNS(t, map[string][]rr{"shop.beispiel.de": {{typ: TypeA, ttl: 120, data: []byte{203, 0, 113, 8}}}}, true)
-	a := testResolver(port).Lookup(context.Background(), "shop.beispiel.de")
+	port := fakeNS(t, map[string][]rr{"shop.beispiel.example": {{typ: TypeA, ttl: 120, data: []byte{203, 0, 113, 8}}}}, true)
+	a := testResolver(port).Lookup(context.Background(), "shop.beispiel.example")
 	if a.Server == "" || len(a.Records) != 1 || a.Records[0].TTL != 120 {
 		t.Errorf("%+v", a)
 	}

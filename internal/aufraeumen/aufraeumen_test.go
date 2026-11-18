@@ -177,7 +177,7 @@ func newRig(t *testing.T, trash Trash) *rig {
 	}
 	must(os.MkdirAll(filepath.Join(cdir, "sites"), 0o755))
 	r.caddy = filepath.Join(cdir, "Caddyfile")
-	must(os.WriteFile(r.caddy, []byte("{\n\temail a@b.de\n}\nimport sites/*.caddy\nimport extra.bak\n"), 0o644))
+	must(os.WriteFile(r.caddy, []byte("{\n\temail a@b.example\n}\nimport sites/*.caddy\nimport extra.bak\n"), 0o644))
 	must(os.WriteFile(filepath.Join(cdir, "sites", "shop.caddy"), []byte("shop.example.org {\n\treverse_proxy 127.0.0.1:3000\n}\n"), 0o644))
 	must(os.WriteFile(filepath.Join(cdir, "extra.bak"), []byte("# eingebunden\n"), 0o644))
 	must(os.WriteFile(filepath.Join(cdir, "Caddyfile.bak-2026-10-13"), []byte("alte Kopie\n"), 0o640))

@@ -87,7 +87,7 @@ func TestSegmente(t *testing.T) {
 }
 
 func TestSegmenteFehler(t *testing.T) {
-	for _, bad := range []string{"a.de {\n", "}\n", "a.de {\n respond <<X\n"} {
+	for _, bad := range []string{"a.example {\n", "}\n", "a.example {\n respond <<X\n"} {
 		if _, err := Segments([]byte(bad)); err == nil {
 			t.Errorf("%q: kein Fehler", bad)
 		}
@@ -100,14 +100,14 @@ func TestSegmenteFehler(t *testing.T) {
 
 func TestHostOf(t *testing.T) {
 	for in, want := range map[string]string{
-		"Example.org":           "example.org",
-		"https://a.de:8443/x":   "a.de",
-		"http://b.de":           "b.de",
-		":8080":                 "",
-		"{$DOMAIN}":             "",
-		"*.example.org":         "*.example.org",
-		"[::1]:443":             "::1",
-		"panel.example.net:443": "panel.example.net",
+		"Example.org":              "example.org",
+		"https://a.example:8443/x": "a.example",
+		"http://b.example":         "b.example",
+		":8080":                    "",
+		"{$DOMAIN}":                "",
+		"*.example.org":            "*.example.org",
+		"[::1]:443":                "::1",
+		"panel.example.net:443":    "panel.example.net",
 	} {
 		if got := HostOf(in); got != want {
 			t.Errorf("HostOf(%q) = %q, erwartet %q", in, got, want)
@@ -117,9 +117,9 @@ func TestHostOf(t *testing.T) {
 
 func TestGleicheKonfiguration(t *testing.T) {
 	a := `{"level":"info"}
-{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["a.de"]}],"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"127.0.0.1:1"}]}]},{"match":[{"host":["b.de"]}],"handle":[{"handler":"a"},{"handler":"b"}]}]}}},"tls":{"automation":{"policies":[{"subjects":["b.de","a.de"]}]}}}}`
+{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["a.example"]}],"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"127.0.0.1:1"}]}]},{"match":[{"host":["b.example"]}],"handle":[{"handler":"a"},{"handler":"b"}]}]}}},"tls":{"automation":{"policies":[{"subjects":["b.example","a.example"]}]}}}}`
 	// Andere Reihenfolge der Seiten, anderer Servername: gleich.
-	b := `{"apps":{"http":{"servers":{"srv1":{"listen":[":443"],"routes":[{"match":[{"host":["b.de"]}],"handle":[{"handler":"a"},{"handler":"b"}]},{"match":[{"host":["a.de"]}],"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"127.0.0.1:1"}]}]}]}}},"tls":{"automation":{"policies":[{"subjects":["a.de","b.de"]}]}}}}`
+	b := `{"apps":{"http":{"servers":{"srv1":{"listen":[":443"],"routes":[{"match":[{"host":["b.example"]}],"handle":[{"handler":"a"},{"handler":"b"}]},{"match":[{"host":["a.example"]}],"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"127.0.0.1:1"}]}]}]}}},"tls":{"automation":{"policies":[{"subjects":["a.example","b.example"]}]}}}}`
 	ja, err := configJSON([]byte(a))
 	if err != nil {
 		t.Fatal(err)
@@ -144,34 +144,34 @@ func TestGleicheKonfiguration(t *testing.T) {
 	}
 	// Überschneiden sich Seiten (Platzhalter und feste Domain), zählt die
 	// Reihenfolge: Die erste passende gewinnt.
-	w1 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["*.a.de"]}],"handle":[{"handler":"x"}]},{"match":[{"host":["b.a.de"]}],"handle":[{"handler":"y"}]}]}}}}}`
-	w2 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["b.a.de"]}],"handle":[{"handler":"y"}]},{"match":[{"host":["*.a.de"]}],"handle":[{"handler":"x"}]}]}}}}}`
+	w1 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["*.a.example"]}],"handle":[{"handler":"x"}]},{"match":[{"host":["b.a.example"]}],"handle":[{"handler":"y"}]}]}}}}}`
+	w2 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["b.a.example"]}],"handle":[{"handler":"y"}]},{"match":[{"host":["*.a.example"]}],"handle":[{"handler":"x"}]}]}}}}}`
 	if same, _, _ := SameConfig([]byte(w1), []byte(w2)); same {
 		t.Error("Reihenfolge bei Platzhalter nicht beachtet")
 	}
 	// Gleiche Domain mit Pfad: ebenso.
-	p1 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["a.de"],"path":["/api/*"]}],"handle":[{"handler":"x"}]},{"match":[{"host":["a.de"]}],"handle":[{"handler":"y"}]}]}}}}}`
-	p2 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["a.de"]}],"handle":[{"handler":"y"}]},{"match":[{"host":["a.de"],"path":["/api/*"]}],"handle":[{"handler":"x"}]}]}}}}}`
+	p1 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["a.example"],"path":["/api/*"]}],"handle":[{"handler":"x"}]},{"match":[{"host":["a.example"]}],"handle":[{"handler":"y"}]}]}}}}}`
+	p2 := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"routes":[{"match":[{"host":["a.example"]}],"handle":[{"handler":"y"}]},{"match":[{"host":["a.example"],"path":["/api/*"]}],"handle":[{"handler":"x"}]}]}}}}}`
 	if same, _, _ := SameConfig([]byte(p1), []byte(p2)); same {
 		t.Error("Reihenfolge bei Pfad nicht beachtet")
 	}
 	// TLS-Regel ohne Subjekte (für alle) und eine feste: Reihenfolge zählt.
-	t1 := `{"apps":{"tls":{"automation":{"policies":[{"subjects":["a.de"],"issuers":[{"module":"acme"}]},{"issuers":[{"module":"internal"}]}]}}}}`
-	t2 := `{"apps":{"tls":{"automation":{"policies":[{"issuers":[{"module":"internal"}]},{"subjects":["a.de"],"issuers":[{"module":"acme"}]}]}}}}`
+	t1 := `{"apps":{"tls":{"automation":{"policies":[{"subjects":["a.example"],"issuers":[{"module":"acme"}]},{"issuers":[{"module":"internal"}]}]}}}}`
+	t2 := `{"apps":{"tls":{"automation":{"policies":[{"issuers":[{"module":"internal"}]},{"subjects":["a.example"],"issuers":[{"module":"acme"}]}]}}}}`
 	if same, _, _ := SameConfig([]byte(t1), []byte(t2)); same {
 		t.Error("Reihenfolge der TLS-Regeln nicht beachtet")
 	}
 }
 
 func TestGleicheKonfigurationMitLogs(t *testing.T) {
-	a := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"logs":{"logger_names":{"a.de":["log0"],"b.de":["log1"]}},"routes":[]}}}},"logging":{"logs":{"default":{"exclude":["http.log.access.log0","http.log.access.log1"]},"log0":{"writer":{"output":"file","filename":"/var/log/a.log"},"include":["http.log.access.log0"]},"log1":{"writer":{"output":"file","filename":"/var/log/b.log"},"include":["http.log.access.log1"]}}}}`
-	// Nach dem Umordnen kommt b.de zuerst und heißt log0.
-	b := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"logs":{"logger_names":{"b.de":["log0"],"a.de":["log1"]}},"routes":[]}}}},"logging":{"logs":{"default":{"exclude":["http.log.access.log0","http.log.access.log1"]},"log1":{"writer":{"output":"file","filename":"/var/log/a.log"},"include":["http.log.access.log1"]},"log0":{"writer":{"output":"file","filename":"/var/log/b.log"},"include":["http.log.access.log0"]}}}}`
+	a := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"logs":{"logger_names":{"a.example":["log0"],"b.example":["log1"]}},"routes":[]}}}},"logging":{"logs":{"default":{"exclude":["http.log.access.log0","http.log.access.log1"]},"log0":{"writer":{"output":"file","filename":"/var/log/a.log"},"include":["http.log.access.log0"]},"log1":{"writer":{"output":"file","filename":"/var/log/b.log"},"include":["http.log.access.log1"]}}}}`
+	// Nach dem Umordnen kommt b.example zuerst und heißt log0.
+	b := `{"apps":{"http":{"servers":{"srv0":{"listen":[":443"],"logs":{"logger_names":{"b.example":["log0"],"a.example":["log1"]}},"routes":[]}}}},"logging":{"logs":{"default":{"exclude":["http.log.access.log0","http.log.access.log1"]},"log1":{"writer":{"output":"file","filename":"/var/log/a.log"},"include":["http.log.access.log1"]},"log0":{"writer":{"output":"file","filename":"/var/log/b.log"},"include":["http.log.access.log0"]}}}}`
 	if same, where, err := SameConfig([]byte(a), []byte(b)); err != nil || !same {
 		t.Fatalf("gleich erwartet: %v %s", err, where)
 	}
 	// Vertauschte Dateien: nicht gleich.
-	c := strings.Replace(b, `"b.de":["log0"],"a.de":["log1"]`, `"b.de":["log1"],"a.de":["log0"]`, 1)
+	c := strings.Replace(b, `"b.example":["log0"],"a.example":["log1"]`, `"b.example":["log1"],"a.example":["log0"]`, 1)
 	if same, _, _ := SameConfig([]byte(a), []byte(c)); same {
 		t.Error("vertauschte Logs nicht erkannt")
 	}

@@ -70,5 +70,4 @@ Ab = abgelöst, K = Probe-Kopie, D = Domain aus. ✓ beachtet, – trifft dort n
 | `leitstand.js` `finishBox` (neuer Server) | `/api/umzug/abschluss` | – | – | – | – | ✓ (einzige Ausnahme zu I3) | – | – | – |
 
 Die mit ✗ markierten Zellen prüft das Drehbuch S6 im Labor (Überwachung auf einem abgelösten Server und auf
-einer Probe-Kopie); das Ergebnis steht in der Zustandsmatrix
-(`/mnt/project-files/pruefung-umzug-konsistenz/matrix.md`).
+einer Probe-Kopie).

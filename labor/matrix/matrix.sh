@@ -131,6 +131,10 @@ echo "$ALLE" | while IFS='|' read -r name img pkgs get; do
 
   check "verfälschte Prüfsummen werden abgelehnt, nichts geändert" \
     x "out=\$($load http://$SUB.1:$PORT/falsch/install.sh | HOSTDECK_BASIS=http://$SUB.1:$PORT/falsch bash -s -- --ja 2>&1); echo \"\$out\"; echo \"\$out\" | grep -q 'Signatur passt nicht' && ! test -e /usr/local/lib/hostdeck"
+  check "Hilfe über die Pipe (--help)" \
+    x "$load $BASIS/install.sh | bash -s -- --help | grep -q -- '--version'"
+  check "zu wenig Platz: abgelehnt, nichts geändert" \
+    x "mount -t tmpfs -o size=50m tmpfs /usr/local/lib && out=\$($load $BASIS/install.sh | HOSTDECK_BASIS=$BASIS bash -s -- --ja 2>&1); rc=\$?; umount /usr/local/lib; echo \"\$out\"; test \$rc -ne 0 && echo \"\$out\" | grep -q 'MB frei' && ! test -e /usr/local/bin/hostdeck && ! test -e /usr/local/lib/hostdeck"
   check "Installieren mit --ja ($get)" \
     x "set -o pipefail; $load $BASIS/install.sh | HOSTDECK_BASIS=$BASIS bash -s -- --ja"
   check "Dienste laufen" x "systemctl is-active hostdeck-dienst.service hostdeck-web.service"

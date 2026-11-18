@@ -2,6 +2,17 @@
 
 Versionen nach [SemVer](https://semver.org/lang/de/). Neueste oben.
 
+## Unveröffentlicht
+
+- **Installationsskript:** prüft vor dem Plan, ob genug Platz frei ist (100 MB unter
+  `/usr/local/lib`, 200 MB unter `/var/lib`), und `--help` funktioniert auch über
+  `curl … | bash -s -- --help`.
+- **Texte:** Backup, Wiederherstellen und Umzug verweisen ohne Dienst auf den Leitstand
+  (`sudo hostdeck einrichten`) statt auf `hostdeck.exe`, das es im Release nicht gibt.
+- **Nachbaubar:** Releases entstehen nur noch aus dem öffentlichen `main` und lassen sich mit der
+  genannten Go-Version bitgleich nachbauen (siehe README).
+- Test-Domains durchgehend auf `*.example` umgestellt.
+
 ## 1.0.0
 
 Erste öffentliche Fassung.

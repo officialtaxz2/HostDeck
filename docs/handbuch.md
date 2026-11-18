@@ -427,5 +427,5 @@ die du von Hand in `manifest.yaml` geschrieben hast, gehen beim Speichern über 
 | `internal/outdir` | sicheres Schreiben in den Ergebnisordner |
 | `internal/fixture` | nachgebauter Testserver |
 | `labor` | Prüflabor mit nachgebauten Servern in Docker |
-| `release` | Release bauen und signieren, Lizenzliste |
+| `release` | Release bauen und signieren, Lizenzliste, Prüfung gegen eine Sperrliste vor dem Hochladen |
 | `docs` | Handbuch und Manifest-Schema |

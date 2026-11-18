@@ -90,7 +90,7 @@ func TestDomainsImLeitstand(t *testing.T) {
 	if code, _ = r.api(t, "POST", "/api/domains/ordnen", sid, `{}`); code != http.StatusBadRequest {
 		t.Errorf("ohne Vorschau: %d", code)
 	}
-	if code, _ = r.api(t, "POST", "/api/domains/aendern", sid, `{"aktion":"loeschen","domain":"a.de","stand":"x"}`); code != http.StatusBadRequest {
+	if code, _ = r.api(t, "POST", "/api/domains/aendern", sid, `{"aktion":"loeschen","domain":"a.example","stand":"x"}`); code != http.StatusBadRequest {
 		t.Errorf("unbekannte Aktion: %d", code)
 	}
 	if code, _ = r.api(t, "POST", "/api/domains/aendern", sid, `{"aktion":"aus","domain":"a b","stand":"x"}`); code != http.StatusUnprocessableEntity {

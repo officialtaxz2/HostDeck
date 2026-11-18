@@ -156,6 +156,17 @@ Die Tests laufen gegen einen nachgebauten Server (`internal/fixture`). Das Prüf
 baut mit Docker ganze Server nach, auch für die Prüfung des Installationsskripts auf allen
 unterstützten Systemen (`labor/matrix/`). Releases baut `release/bauen.sh`.
 
+Jedes Release nach 1.0.0 lässt sich nachbauen: den Tag auschecken und mit der Go-Version aus dem
+Release-Text bauen. Die Prüfsumme muss mit der aus `SHA256SUMS` übereinstimmen.
+
+```bash
+v=1.2.3   # Version des Releases
+git checkout "v$v"
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath \
+  -ldflags "-s -w -X main.version=$v" -o "hostdeck-$v-linux-amd64" ./cmd/hostdeck
+sha256sum "hostdeck-$v-linux-amd64"
+```
+
 ## Lizenz
 
 MIT, siehe [LICENSE](LICENSE). Die Lizenzen der eingebauten Bibliotheken und Schriften stehen in

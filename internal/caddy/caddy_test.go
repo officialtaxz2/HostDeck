@@ -316,7 +316,7 @@ func TestImporte(t *testing.T) {
 		}
 	}
 	// In einem Block zählt ein import nicht.
-	if Covered([]byte("x.de {\n\timport *.caddy\n}\n"), dir, target) {
+	if Covered([]byte("x.example {\n\timport *.caddy\n}\n"), dir, target) {
 		t.Error("import im Block")
 	}
 	// Hin und zurück: byte-gleich.
@@ -344,7 +344,7 @@ func TestExecStartUndHosts(t *testing.T) {
 	if bin != "/usr/bin/caddy" || cfg != "/etc/caddy/Caddyfile" {
 		t.Fatalf("%q %q", bin, cfg)
 	}
-	f := &fake{hosts: []string{"B.example.de", "a.example.de", "*.wild.de"}}
+	f := &fake{hosts: []string{"B.example.de", "a.example.de", "*.wild.example"}}
 	out, _ := f.run(context.Background(), []string{"HOME=/x"}, "caddy", "adapt")
 	hosts, err := HostsFromJSON(out)
 	if err != nil || strings.Join(hosts, ",") != "a.example.de,b.example.de" {

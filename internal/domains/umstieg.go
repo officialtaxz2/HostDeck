@@ -7,7 +7,7 @@ import (
 
 // Retitle ersetzt beim Umstieg von sbm auf HostDeck den Vermerk in der
 // ersten Zeile der Caddy-Dateien, die die frühere Fassung geschrieben hat
-// („# x.de: angelegt von sbm.“), und trägt die neue Prüfsumme ein. Dateien,
+// („# x.example: angelegt von sbm.“), und trägt die neue Prüfsumme ein. Dateien,
 // die seitdem jemand geändert hat, bleiben unberührt. n: so viele Dateien.
 func (s *Service) Retitle(from, to string) (int, error) {
 	state := s.loadState()

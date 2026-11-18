@@ -38,7 +38,7 @@ func TestLotse(t *testing.T) {
 
 // Schritt 10: Abschluss auf dem neuen Server.
 func TestUmzugAbschluss(t *testing.T) {
-	test := []string{"hostdeck-neu.beispiel.de"}
+	test := []string{"hostdeck-neu.beispiel.example"}
 	r, sid := modeRig(t, func(d *Dienst) {
 		d.FinishFile = filepath.Join(t.TempDir(), "umzug-abschluss.json")
 		d.TestAddresses = func() []string { return test }
@@ -50,7 +50,7 @@ func TestUmzugAbschluss(t *testing.T) {
 	if code, _ := r.api(t, "POST", "/api/umzug/abschluss", sid, `{"punkt":"tabs","erledigt":true}`); code != 404 {
 		t.Fatalf("ohne Datei: %d", code)
 	}
-	f := NewFinish("root@203.0.113.1", "hostdeck-neu.beispiel.de", d.now())
+	f := NewFinish("root@203.0.113.1", "hostdeck-neu.beispiel.example", d.now())
 	bs, _ := json.Marshal(f)
 	os.WriteFile(d.FinishFile, bs, 0o600)
 	if !d.Status().AbschlussOffen {

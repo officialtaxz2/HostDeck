@@ -43,7 +43,7 @@ func restoreCmd(ctx context.Context, args []string, stdout, stderr io.Writer) in
 		return pcRestore(remote.Config{Action: remote.ActionRestore, Plan: *plan, Port: *port}, *server, *folder, stdout, stderr)
 	}
 	if *repo == "" {
-		fmt.Fprintln(stderr, "Das Zurückspielen startest du am PC: hostdeck.exe restore")
+		fmt.Fprintln(stderr, "Auf einen neuen Server zieht HostDeck im Leitstand unter Umzug (Probe-Umzug und Umzugstag).")
 		fmt.Fprintln(stderr, "Direkt auf dem Server geht es nur mit einem Ziel: sudo ./hostdeck restore --repo <Ordner mit dem Backup>")
 		return 2
 	}

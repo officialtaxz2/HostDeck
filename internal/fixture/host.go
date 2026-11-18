@@ -52,7 +52,7 @@ func buildHost(t testing.TB, root string) {
 
 	// Home-Ordner
 	write("/root/.ssh/authorized_keys", "ssh-ed25519 AAAAgeheim1 demo@pc\n# alt\nssh-ed25519 AAAAgeheim2 handy\n", 0o600)
-	write("/root/.ssh/id_ed25519", "-----BEGIN OPENSSH PRIVATE KEY-----\ngeheim-privat\n", 0o600)
+	write("/root/.ssh/id_ed25519", "PRIVAT-GEHEIM\n", 0o600)
 	write("/root/.ssh/id_ed25519.pub", "ssh-ed25519 AAAAgeheim3 root@vps1\n", 0o644)
 	write("/root/.docker/config.json", `{"auths":{"ghcr.io":{"auth":"Z2VoZWltLWdoY3I="}}}`, 0o600)
 	write("/root/backup.sh", "#!/bin/sh\n", 0o755)

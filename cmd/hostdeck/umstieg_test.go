@@ -250,16 +250,16 @@ func TestUmstiegCaddyfile(t *testing.T) {
 	u := &umstieg{old: legacy}
 	cf := "# Von sbm geordnet am 01.11.2026: Jede Domain hat ihre eigene Datei in sites/.\n" +
 		"# Abgeschaltete Domains liegen in sites/aus/. Die alte Fassung dieser Datei: sbm-sicherung/20261101-100000/.\n" +
-		"{\n\temail a@b.de\n}\nimport sites/*.caddy\n\n" + legacy.ImportComment + "\nimport /etc/caddy/sbm.caddy\n\nx.de {\n\trespond sbm\n}\n"
+		"{\n\temail a@b.example\n}\nimport sites/*.caddy\n\n" + legacy.ImportComment + "\nimport /etc/caddy/sbm.caddy\n\nx.example {\n\trespond sbm\n}\n"
 	got, imp := u.caddyfile([]byte(cf), "/etc/caddy/sbm.caddy", "/etc/caddy/hostdeck.caddy", "/etc/caddy", true)
 	want := "# Von HostDeck geordnet am 01.11.2026: Jede Domain hat ihre eigene Datei in sites/.\n" +
 		"# Abgeschaltete Domains liegen in sites/aus/. Die alte Fassung dieser Datei: hostdeck-sicherung/20261101-100000/.\n" +
-		"{\n\temail a@b.de\n}\nimport sites/*.caddy\n\n" + caddy.ImportComment + "\nimport /etc/caddy/hostdeck.caddy\n\nx.de {\n\trespond sbm\n}\n"
+		"{\n\temail a@b.example\n}\nimport sites/*.caddy\n\n" + caddy.ImportComment + "\nimport /etc/caddy/hostdeck.caddy\n\nx.example {\n\trespond sbm\n}\n"
 	if string(got) != want || !imp {
 		t.Errorf("Caddyfile:\n%s\nerwartet:\n%s", got, want)
 	}
 	// Ohne eigene import-Zeile (von Hand eingebunden): eine neue ans Ende.
-	cf = "x.de {\n\trespond hi\n}\nimport sbm.caddy\n"
+	cf = "x.example {\n\trespond hi\n}\nimport sbm.caddy\n"
 	got, imp = u.caddyfile([]byte(cf), "/etc/caddy/sbm.caddy", "/etc/caddy/hostdeck.caddy", "/etc/caddy", false)
 	if !imp || strings.Contains(string(got), "sbm.caddy") || !strings.Contains(string(got), "import /etc/caddy/hostdeck.caddy") {
 		t.Errorf("von Hand:\n%s", got)

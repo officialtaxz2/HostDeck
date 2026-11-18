@@ -125,14 +125,14 @@ import sites/*.caddy
 import leer/*.caddy
 import /opt/docker/fehlt.caddy
 # import /etc/caddy/auskommentiert.caddy
-a.de {
+a.example {
 	import gemeinsam
 	import snippets.caddy # Kommentar
 }
 `)
 	write("/etc/caddy/sites/a.caddy", "import ../tief.caddy\n")
-	write("/etc/caddy/sites/b.caddy", "b.de {}\n")
-	write("/etc/caddy/tief.caddy", "c.de {}\n")
+	write("/etc/caddy/sites/b.caddy", "b.example {}\n")
+	write("/etc/caddy/tief.caddy", "c.example {}\n")
 	write("/etc/caddy/snippets.caddy", "(x) {}\n")
 	s := &scan{d: Deps{FS: hostfs.New(root)}, inv: &inventory.Inventory{}}
 	c := &inventory.Caddy{}
@@ -153,10 +153,10 @@ a.de {
 
 func TestCaddyRoutenOhneGeheimnisse(t *testing.T) {
 	js := `{"apps":{"http":{"servers":{"a":{"routes":[
-		{"match":[{"host":["x.de"]}],"handle":[{"handler":"subroute","routes":[{"handle":[
+		{"match":[{"host":["x.example"]}],"handle":[{"handler":"subroute","routes":[{"handle":[
 			{"handler":"authentication","providers":{"http_basic":{"accounts":[{"password":"geheim"}]}}},
 			{"handler":"reverse_proxy","upstreams":[{"dial":"localhost:1"},{"dial":"localhost:2"}]}]}]}]},
-		{"match":[{"host":["y.de","www.y.de"]}],"handle":[{"handler":"static_response","headers":{"Location":["https://z.de"]}}]},
+		{"match":[{"host":["y.example","www.y.example"]}],"handle":[{"handler":"static_response","headers":{"Location":["https://z.example"]}}]},
 		{"handle":[{"handler":"file_server","root":"/srv"}]}
 	]}}}}}`
 	routes, err := parseCaddyRoutes([]byte(js))
@@ -167,7 +167,7 @@ func TestCaddyRoutenOhneGeheimnisse(t *testing.T) {
 	for _, r := range routes {
 		got = append(got, strings.Join(r.Hosts, ",")+" "+r.Handler+" "+r.Upstream)
 	}
-	want := "x.de reverse_proxy localhost:1|x.de reverse_proxy localhost:2|www.y.de,y.de static_response |* file_server "
+	want := "x.example reverse_proxy localhost:1|x.example reverse_proxy localhost:2|www.y.example,y.example static_response |* file_server "
 	if strings.Join(got, "|") != want {
 		t.Errorf("Routen: %q", strings.Join(got, "|"))
 	}
@@ -175,15 +175,15 @@ func TestCaddyRoutenOhneGeheimnisse(t *testing.T) {
 
 func TestEintragDesLeitstandsZaehltNicht(t *testing.T) {
 	js := `{"apps":{"http":{"servers":{"a":{"routes":[
-		{"match":[{"host":["hostdeck.x.de"]}],"handle":[{"handler":"subroute","routes":[{"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"unix//run/hostdeck-caddy/web.sock"}]}]}]}]},
-		{"match":[{"host":["x.de"]}],"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"localhost:1"}]}]}
+		{"match":[{"host":["hostdeck.x.example"]}],"handle":[{"handler":"subroute","routes":[{"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"unix//run/hostdeck-caddy/web.sock"}]}]}]}]},
+		{"match":[{"host":["x.example"]}],"handle":[{"handler":"reverse_proxy","upstreams":[{"dial":"localhost:1"}]}]}
 	]}}}}}`
 	routes, err := parseCaddyRoutes([]byte(js))
 	if err != nil {
 		t.Fatal(err)
 	}
 	routes = withoutOwnRoutes(routes)
-	if len(routes) != 1 || routes[0].Hosts[0] != "x.de" {
+	if len(routes) != 1 || routes[0].Hosts[0] != "x.example" {
 		t.Fatalf("Routen: %+v", routes)
 	}
 }
