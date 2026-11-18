@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>HostDeck Leitstand</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235b4bd6'/%3E%3Cpath d='M8 11h16M8 16h16M8 21h10' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HostDeck">
+<meta name="theme-color" content="#0b0b12">
+<script src="theme.js"></script>
+<link rel="preload" href="fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="app.css">
+<script src="leitstand.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<div class="ls-bg" aria-hidden="true"></div>
+<a class="skip" href="#app">Zum Inhalt</a>
+<div class="ls-app" id="page">
+  <aside class="ls-side" id="side" aria-label="Hauptnavigation">
+    <div class="ls-srv" id="srv"></div>
+    <button class="ls-sq" id="search-btn" type="button" aria-label="Suchen (Strg+K)"></button>
+    <nav class="ls-nav" id="nav" aria-label="Bereiche des Leitstands"></nav>
+    <div class="ls-set" id="set"></div>
+    <div class="ls-foot" id="side-foot"></div>
+  </aside>
+  <div class="ls-main">
+    <header class="ls-top">
+      <button class="ls-ibtn ls-menu-btn" id="menu-btn" type="button" aria-label="Navigation öffnen" aria-controls="side" aria-expanded="false"></button>
+      <div class="theme ls-theme" id="theme"></div>
+      <div class="theme" id="bell"></div>
+    </header>
+    <div class="hd" id="axbar" hidden>
+      <div class="hd-in">
+        <div class="hd-l"><span id="host">Auswahl</span></div>
+        <div class="hd-r">
+          <span id="status" class="st" role="status"></span>
+          <button id="save" class="btn btn-p btn-sm" type="button" disabled>Speichern</button>
+        </div>
+      </div>
+      <nav class="areas" id="areas" aria-label="Bereiche der Auswahl" hidden></nav>
+    </div>
+    <main id="app" tabindex="-1"><p class="loading" aria-busy="true">Lade die Bestandsaufnahme …</p></main>
+  </div>
+</div>
+<nav class="ls-tabbar" id="tabbar" aria-label="Schnellzugriff"></nav>
+<div id="layer"></div>
+<div id="live" class="sr" aria-live="polite"></div>
+<div id="toasts"></div>
+<noscript><p class="loading">Diese Seite braucht JavaScript.</p></noscript>
+</body>
+</html>

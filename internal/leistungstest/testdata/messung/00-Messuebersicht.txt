@@ -1,0 +1,64 @@
+CPU-PERFORMANCEMESSUNG - UEBERSICHT
+Messung erstellt: 2026-11-09T15:17:50+00:00
+Zeitzone und UTC-Offset sind in den Zeitstempeln angegeben.
+
+1. Benchmark-Konfiguration
+Geekbench: ausgelassen (GEEKBENCH=0)
+Sysbench: CPU-Primzahltest, Maximalwert 20000, je 3 s
+Sysbench: 1 Thread und 4 Threads
+mpstat: 1-s-Intervalle mit 1 s Vor- und 1 s Nachlauf
+vmstat: 1-s-Intervalle, 30 Stichproben waehrend des Multi-Core-Tests (sofern dieser >=30 s dauert)
+
+2. Exakte Zeitpunkte
+2026-11-09T15:17:38+00:00 | START Gesamtmessung
+2026-11-09T15:17:38+00:00 | Geekbench 6 ausgelassen (GEEKBENCH=0)
+2026-11-09T15:17:38+00:00 | Pause vor Sysbench Single-Core: 1s
+2026-11-09T15:17:39+00:00 | START Monitor Sysbench Single-Core
+2026-11-09T15:17:40+00:00 | START Sysbench Single-Core, threads=1, time=3s, prime=20000
+2026-11-09T15:17:43+00:00 | END Sysbench Single-Core, exit=0
+2026-11-09T15:17:44+00:00 | STOP Monitor Sysbench Single-Core
+2026-11-09T15:17:44+00:00 | Pause vor Sysbench Multi-Core: 1s
+2026-11-09T15:17:45+00:00 | START Monitor Sysbench Multi-Core
+2026-11-09T15:17:46+00:00 | START Sysbench Multi-Core, threads=4, time=3s, prime=20000
+2026-11-09T15:17:49+00:00 | END Sysbench Multi-Core, exit=0
+2026-11-09T15:17:50+00:00 | STOP Monitor Sysbench Multi-Core
+2026-11-09T15:17:50+00:00 | ENDE Gesamtmessung
+2026-11-09T15:17:50+00:00 | Status: Beide Sysbench-Phasen abgeschlossen (Geekbench ausgelassen)
+
+3. Benchmark-Ergebnisse
+Sysbench single-core:     events per second:  1065.44
+Sysbench multi-core:     events per second:  4333.51
+Geekbench-Ergebnis (oeffentliche URL, sofern vorhanden):
+
+4. CPU-Steal-Time (mpstat)
+Mittelwerte ueber gesamte Monitorlaufzeit einschliesslich kurzer Vor-/Nachmessungen.
+Die jeweils angegebenen Lastintervalle basieren auf usr+sys-Schwellenwerten.
+
+[Geekbench 6]
+Keine mpstat-Daten
+
+[Sysbench 1 Thread]
+Sekundenintervalle: 5
+Steal, Mittel aller Intervalle: 0.20 %
+Steal, Maximum (CPU all): 0.25 %
+Maximaler Steal einer einzelnen vCPU: 1.00 % (vCPU 3)
+Intervalle mit >=10 % / >=20 % Steal: 0 / 0
+Steal bei CPU-Arbeit >=5 % (n=3): Mittel 0.25 %, Max 0.25 %
+
+[Sysbench 4 Threads]
+Sekundenintervalle: 5
+Steal, Mittel aller Intervalle: 0.85 %
+Steal, Maximum (CPU all): 2.00 %
+Maximaler Steal einer einzelnen vCPU: 4.00 % (vCPU 2)
+Intervalle mit >=10 % / >=20 % Steal: 0 / 0
+Steal bei CPU-Arbeit >=20 % (n=3): Mittel 1.25 %, Max 2.00 %
+
+5. Messprotokolle
+01-geekbench/: Geekbench-Ausgabe und mpstat pro vCPU
+02-sysbench/: beide CPU-Tests mit Sysbench- und mpstat-Protokollen
+02-sysbench/multi-core-vmstat-1s.log: angeforderte vmstat-Messung unter Multi-Core-Last
+system.txt: CPU-/Systeminformationen und cgroup-CPU-Status vor/nach der Messung
+
+Interpretation: %steal zeigt Wartezeit auf Rechenzeit des Hypervisors.
+Die Werte allein belegen keine bestimmte Ursache (z. B. kein Overselling-Nachweis).
+Ein privater Geekbench-Claim-Link wird nicht mitgeliefert.

@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Formatierung
+        run: test -z "$(gofmt -l .)" || (gofmt -l . && exit 1)
+      - name: Vet
+        run: go vet ./...
+      - name: restic für die Tests
+        run: |
+          curl -fsSL -o restic.bz2 https://github.com/restic/restic/releases/download/v0.19.1/restic_0.19.1_linux_amd64.bz2
+          echo "f415415624dcc452f2a02b8c33641791a8c6d6d3b65bbb3543fcf9a25151585c  restic.bz2" | sha256sum -c -
+          bunzip2 restic.bz2 && chmod 700 restic
+          echo "HOSTDECK_RESTIC=$PWD/restic" >> "$GITHUB_ENV"
+      - name: Tests
+        run: go test -race ./...
+      - name: Installationsskript
+        run: bash -n install.sh && shellcheck install.sh release/*.sh
+      - name: Bauen
+        run: |
+          for arch in amd64 arm64; do
+            CGO_ENABLED=0 GOOS=linux GOARCH=$arch go build -trimpath \
+              -ldflags "-s -w -X main.version=0.0.0-${GITHUB_SHA::7}" \
+              -o dist/hostdeck-linux-$arch ./cmd/hostdeck
+          done
+          GOOS=windows go vet ./... && GOOS=darwin go vet ./...
+          (cd dist && sha256sum hostdeck-linux-* > SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hostdeck
+          path: dist/

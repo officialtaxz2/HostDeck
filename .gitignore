@@ -1,0 +1,11 @@
+# Ergebnisse von hostdeck discover: enthalten Domains und Pfade, nie committen
+hostdeck-ergebnis/
+inventory.json
+manifest.yaml
+
+# gebaute Programme
+/dist/
+/hostdeck
+/hostdeck-linux-*
+/hostdeck.exe
+/restic
